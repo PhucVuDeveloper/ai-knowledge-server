@@ -1,0 +1,63 @@
+{
+  "questions": [
+    {
+      "patterns": [
+        "xin chào",
+        "chào bạn",
+        "hello",
+        "hi",
+        "chào shop",
+        "alo"
+      ],
+      "answer": "Dạ xin chào bạn! Rất vui được hỗ trợ bạn. Bạn đang cần giải đáp vấn đề gì ạ?"
+    },
+    {
+      "patterns": [
+        "cảm ơn",
+        "cảm ơn bạn",
+        "em cảm ơn ạ!",
+        "em cảm ơn",
+        "mình cảm ơn",
+        "thanks",
+        "thank you"
+      ],
+      "answer": "Dạ không có gì ạ! Rất vui được hỗ trợ bạn. Chúc bạn một ngày tốt lành và học tập, làm việc hiệu quả nhé!"
+    },
+    {
+      "patterns": [
+        "không đăng nhập được elearning của trường",
+        "lỗi đăng nhập elearning",
+        "không vào được elearning trường",
+        "quên mật khẩu elearning",
+        "hướng dẫn đăng nhập elearning"
+      ],
+      "answer": "Về lỗi không đăng nhập được e-learning của trường, bạn hãy thực hiện các bước sau:\n1. Kiểm tra lại tên đăng nhập (thường là Mã số sinh viên/Email trường cấp).\n2. Nếu quên mật khẩu, bấm vào 'Quên mật khẩu' để nhận mã xác nhận qua email trường.\n3. Xóa cache trình duyệt hoặc thử đăng nhập bằng tab ẩn danh (Incognito).\n4. Nếu vẫn không được, vui lòng liên hệ Trung tâm CNTT / Phòng Đào tạo của trường để được mở khóa tài khoản nhé!"
+    },
+    {
+      "patterns": [
+        "bạn là ai",
+        "tên bạn là gì",
+        "đây là ai",
+        "giới thiệu bản thân"
+      ],
+      "answer": "Tôi là Trợ lý AI tự học thông minh. Tôi luôn sẵn sàng giải đáp thắc mắc và tự động ghi nhớ kiến thức mới từ bạn!"
+    },
+    {
+      "patterns": [
+        "python là gì",
+        "ngôn ngữ python là gì",
+        "định nghĩa python"
+      ],
+      "answer": "Python là một ngôn ngữ lập trình bậc cao, thông dịch, cú pháp trong sáng, rất phổ biến trong phát triển phần mềm, tự động hóa và Trí tuệ Nhân tạo (AI)."
+    },
+    {
+      "patterns": [
+        "thủ đô của việt nam là gì",
+        "thủ đô việt nam",
+        "việt nam có thủ đô là gì"
+      ],
+      "answer": "Thủ đô của Việt Nam là Hà Nội."
+    }
+  ],
+  "pending_questions": []
+}
