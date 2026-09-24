@@ -540,10 +540,21 @@ class DashboardWindow(tk.Tk):
         self.minsize(680, 480)
         self.configure(bg="#1E1E2E")
 
-        # Đường dẫn cơ sở dữ liệu tri thức và cấu hình máy chủ
-        base_dir = os.path.dirname(os.path.abspath(__file__))
+        # Đường dẫn cơ sở dữ liệu tri thức và cấu hình máy chủ (Hỗ trợ cả chế độ file .EXE)
+        if getattr(sys, 'frozen', False):
+            base_dir = os.path.dirname(sys.executable)
+            res_dir = getattr(sys, '_MEIPASS', base_dir)
+        else:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            res_dir = base_dir
+
         kb_path = os.path.join(base_dir, "knowledge_base.json")
+        if not os.path.exists(kb_path) and os.path.exists(os.path.join(res_dir, "knowledge_base.json")):
+            kb_path = os.path.join(res_dir, "knowledge_base.json")
+
         self.config_path = os.path.join(base_dir, "server_config.json")
+        if not os.path.exists(self.config_path) and os.path.exists(os.path.join(res_dir, "server_config.json")):
+            self.config_path = os.path.join(res_dir, "server_config.json")
 
         saved_server_url = self.load_server_config()
         local_ai = SelfLearningAI(knowledge_file=kb_path, threshold=0.50)
@@ -566,14 +577,15 @@ class DashboardWindow(tk.Tk):
 
     def load_server_config(self) -> str:
         """Đọc địa chỉ Server URL đã lưu."""
+        default_url = "https://ai-knowledge-server-cdx5.onrender.com"
         if os.path.exists(self.config_path):
             try:
                 with open(self.config_path, "r", encoding="utf-8") as f:
                     cfg = json.load(f)
-                    return cfg.get("server_url", "http://localhost:8000")
+                    return cfg.get("server_url", default_url)
             except Exception:
                 pass
-        return "http://localhost:8000"
+        return default_url
 
     def save_server_config(self, url: str):
         """Lưu lại địa chỉ Server URL."""

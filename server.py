@@ -8,6 +8,7 @@ Phục vụ nhiều người dùng đồng thời, chia sẻ và đồng bộ kh
 import os
 import sys
 import threading
+import hashlib
 from typing import List, Optional, Dict, Any
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -252,6 +253,26 @@ def delete_pending_item_api(index: int):
     if success:
         return {"status": "success", "message": f"Đã xóa câu hỏi chờ #{index}"}
     raise HTTPException(status_code=404, detail="Không tìm thấy câu hỏi chờ với chỉ số này")
+
+
+@app.get("/api/client-code")
+def get_client_code():
+    """Cung cấp mã nguồn mới nhất của app_floating_ai.py cùng mã băm SHA-256 để máy khách tự động cập nhật mà không cần build lại .exe."""
+    client_file = os.path.join(BASE_DIR, "app_floating_ai.py")
+    if not os.path.exists(client_file):
+        raise HTTPException(status_code=404, detail="File app_floating_ai.py không tồn tại trên máy chủ")
+    
+    with open(client_file, "r", encoding="utf-8") as f:
+        code_content = f.read()
+    
+    code_hash = hashlib.sha256(code_content.encode("utf-8")).hexdigest()
+    return {
+        "status": "success",
+        "filename": "app_floating_ai.py",
+        "hash": code_hash,
+        "length": len(code_content),
+        "code": code_content
+    }
 
 
 def start_server(host="0.0.0.0", port=8000):

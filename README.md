@@ -47,5 +47,15 @@ Có 2 cách rất đơn giản:
      - 🗑️ **Xóa Câu Đang Chọn**: Chọn câu hỏi chờ không cần thiết và bấm *"Xóa Câu Đang Chọn"* (hoặc phím `Delete`).
      - 🧹 **Xóa Tất Cả**: Xóa sạch toàn bộ danh sách câu hỏi chờ chỉ bằng 1 thao tác.
      - ✍️ **Dạy & Học Ngay**: Chọn câu hỏi chờ, nhập câu trả lời vào ô phía dưới và bấm *"Lưu & Học Ngay"* để chuyển thành tri thức chính thức.
-6. **Tự động lưu câu hỏi lạ**: Nếu chưa có câu trả lời, AI tự ghi nhận vào `pending_questions` và mở ô cho bạn dạy ngay tại chỗ.
+6. **Đồng bộ Máy Chủ Online (Render.com)**:
+   - Kết nối trực tiếp tới máy chủ `https://ai-knowledge-server-cdx5.onrender.com` để chia sẻ kho tri thức dùng chung tức thì.
 7. **Cấu hình sẵn cho VS Code**: Tệp `.vscode/launch.json` và `.vscode/settings.json` đã được cài đặt sẵn UTF-8 và chế độ gỡ lỗi (debug).
+
+---
+
+## 📦 Đóng Gói Thành Phần Mềm (.EXE) Cho Người Khác Dùng (Không Cần VS Code, Không Cần Python)
+
+Để người khác có thể tải về và **nhấp đúp chuột là dùng được ngay**:
+1. Nhấp đúp vào tệp: **`build_exe.bat`** (hoặc mở Terminal trong VS Code chạy lệnh: `pip install pyinstaller && pyinstaller --noconsole --onefile --name "TroLyAI" --add-data "knowledge_base.json;." --add-data "server_config.json;." app_floating_ai.py`).
+2. Sau khi chạy xong, trong thư mục `dist` sẽ xuất hiện tệp: **`TroLyAI.exe`**.
+3. Bạn chỉ cần gửi file `TroLyAI.exe` này cho bất kỳ ai. Người nhận chỉ việc nhấp đúp chuột là mở ứng dụng, tự động kết nối máy chủ online của bạn mà không cần cài đặt bất kỳ thứ gì!
