@@ -54,14 +54,17 @@ def test_intent_classification_and_learning():
         print(f" -> Trả lời chuẩn xác: \"{ans1}\"")
 
         # -------------------------------------------------------------
-        # TEST 2: Câu cảm ơn thuần túy
+        # TEST 2: Câu cảm ơn thuần túy (Kiểm tra cả trường hợp ' em cảm ơn ạ!')
         # -------------------------------------------------------------
-        print("\n[TEST 2] Kiểm tra câu cảm ơn thuần túy: 'Em cảm ơn bạn nhiều nha!'")
-        ans2, conf2, pat2, info2 = ai.get_response("Em cảm ơn bạn nhiều nha!")
+        print("\n[TEST 2] Kiểm tra câu cảm ơn thuần túy: ' em cảm ơn ạ!'")
+        ans2, conf2, pat2, info2 = ai.get_response(" em cảm ơn ạ!")
         print(f" -> Ý định: {info2['intent']} | Cốt lõi: '{info2['core_question']}'")
         assert info2["intent"] == "GRATITUDE", f"Sai ý định: {info2['intent']}"
         assert "không có gì" in ans2.lower(), f"Sai câu trả lời cảm ơn: {ans2}"
+        matches_thanks = ai.find_all_matches(" em cảm ơn ạ!")
+        assert len(matches_thanks) >= 1, "Không tìm thấy gợi ý cho ' em cảm ơn ạ!'"
         print(f" -> Trả lời chuẩn xác: \"{ans2}\"")
+        print(f" -> Gợi ý tìm thấy: {len(matches_thanks)} phương án.")
 
         # -------------------------------------------------------------
         # TEST 3: Câu kết hợp: Lời chào + Vấn đề thực tế (Trường hợp của người dùng)

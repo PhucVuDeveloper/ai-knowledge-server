@@ -733,6 +733,7 @@ class DashboardWindow(tk.Tk):
         self.sample_text.pack(fill="x", pady=6)
 
         sample_content = (
+            "- em cảm ơn ạ!\n"
             "- Xin chào ạ em không đăng nhập được elearning của trường ạ\n"
             "- Cảm ơn shop nhiều nhé ạ!\n"
             "- Xin chào bạn\n"

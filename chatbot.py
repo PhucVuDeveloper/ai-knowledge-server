@@ -129,41 +129,42 @@ class SelfLearningAI:
                 has_gratitude = True
                 break
 
-        # 3. Bóc tách câu hỏi cốt lõi (Core Question)
+        # 3. Bóc tách câu hỏi cốt lõi (Core Question) bằng vòng lặp bóc tách tuần tự
         working_text = cleaned
-
-        # Loại bỏ phần lời chào ở đầu câu
-        if has_greeting:
+        changed = True
+        while changed:
+            before = working_text
+            # Lọc bỏ từ đệm / đại từ nhân xưng ở đầu câu (em, mình, cho em hỏi, dạ, vâng, ad ơi...)
+            for pat in self.FILLER_PREFIXES:
+                working_text = re.sub(pat, "", working_text).strip()
+            # Lọc bỏ lời chào ở đầu câu
             for pat in self.GREETING_PATTERNS:
                 working_text = re.sub(r"^" + pat + r"\s*", "", working_text).strip()
-
-        # Loại bỏ phần cảm ơn ở đầu hoặc cuối câu
-        if has_gratitude:
+            # Lọc bỏ lời cảm ơn ở đầu hoặc cuối câu
             for pat in self.GRATITUDE_PATTERNS:
                 working_text = re.sub(r"^" + pat + r"\s*", "", working_text).strip()
                 working_text = re.sub(r"\s*" + pat + r"$", "", working_text).strip()
+            # Lọc bỏ từ đệm / kính ngữ ở cuối câu (ạ, nhé, nha, với ạ, giúp em với...)
+            for pat in self.FILLER_SUFFIXES:
+                working_text = re.sub(pat, "", working_text).strip()
 
-        # Lọc bỏ từ đệm/kính ngữ ở đầu và cuối (dạ, vâng, cho em hỏi, em, ạ, nhé...)
-        for pat in self.FILLER_PREFIXES:
-            working_text = re.sub(pat, "", working_text).strip()
-        for pat in self.FILLER_SUFFIXES:
-            working_text = re.sub(pat, "", working_text).strip()
+            changed = (working_text != before)
 
         core_question = working_text.strip()
 
         # 4. Xác định phân loại ý định (Intent Classification)
-        # Nếu sau khi loại bỏ chào và cảm ơn mà phần còn lại rỗng hoặc quá ngắn (dưới 3 ký tự)
+        # Nếu sau khi loại bỏ chào, cảm ơn và từ đệm mà phần còn lại rỗng hoặc quá ngắn (dưới 3 ký tự)
         if len(core_question) < 3:
-            if has_greeting:
-                intent = "GREETING"
-                core_question = "xin chào"
-            elif has_gratitude:
+            if has_gratitude:
                 intent = "GRATITUDE"
                 core_question = "cảm ơn"
+            elif has_greeting:
+                intent = "GREETING"
+                core_question = "xin chào"
             else:
                 intent = "QUESTION"
         else:
-            # Còn lại phần nội dung thực sự -> Câu hỏi
+            # Còn lại phần nội dung câu hỏi thực sự
             if has_greeting or has_gratitude:
                 intent = "COMPOUND_QUESTION"
             else:
@@ -223,10 +224,10 @@ class SelfLearningAI:
         core_q = analysis["core_question"]
         has_greeting = analysis["has_greeting"]
 
-        # Nếu là câu chào thuần túy: Ưu tiên trả lời mẫu chào
+        # Nếu là câu chào thuần túy: Tra cứu mẫu chào
         if intent == "GREETING":
             core_q = "xin chào"
-        # Nếu là câu cảm ơn thuần túy: Ưu tiên trả lời mẫu cảm ơn
+        # Nếu là câu cảm ơn thuần túy: Tra cứu mẫu cảm ơn
         elif intent == "GRATITUDE":
             core_q = "cảm ơn"
 
@@ -243,8 +244,20 @@ class SelfLearningAI:
             # Nếu đây là câu hỏi kết hợp (có thắc mắc thực sự), loại bỏ các câu trả lời chỉ là chào/cảm ơn đơn thuần
             if intent in ["COMPOUND_QUESTION", "QUESTION"]:
                 is_pure_greeting_item = any(p in ["xin chào", "chào bạn", "hello", "hi"] for p in patterns)
-                is_pure_gratitude_item = any(p in ["cảm ơn", "thanks", "thank you"] for p in patterns)
+                is_pure_gratitude_item = any(p in ["cảm ơn", "thanks", "thank you", "cảm ơn bạn"] for p in patterns)
                 if is_pure_greeting_item or is_pure_gratitude_item:
+                    continue
+
+            # Nếu là câu chào thuần túy: Ưu tiên mục tri thức có chứa lời chào
+            if intent == "GREETING":
+                is_greeting_item = any(re.search(pat, p) for p in patterns for pat in self.GREETING_PATTERNS)
+                if not is_greeting_item:
+                    continue
+
+            # Nếu là câu cảm ơn thuần túy: Ưu tiên mục tri thức có chứa lời cảm ơn
+            if intent == "GRATITUDE":
+                is_gratitude_item = any(re.search(pat, p) for p in patterns for pat in self.GRATITUDE_PATTERNS)
+                if not is_gratitude_item:
                     continue
 
             best_item_score = 0.0
